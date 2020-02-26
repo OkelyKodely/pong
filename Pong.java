@@ -125,7 +125,7 @@ public class Pong implements KeyListener {
                             }
                             j.setTitle("pong. {Points} Human: " + lives + " v. Computer: " + lives2);
                             try {
-                                Thread.sleep(30);
+                                Thread.sleep(60);
                                 draw();
                                 ball.move();
                                 paddle.draw();
@@ -155,8 +155,9 @@ public class Pong implements KeyListener {
                                     break;
                                 Graphics g = p.getGraphics();
                                 try {
-                                    Image img = ImageIO.read(getClass().getResourceAsStream("bg.jpg"));
-                                    g.drawImage(img, 0, 0, 1000, 700, null);
+                                    if(bgimg == null)
+                                        bgimg = ImageIO.read(getClass().getResourceAsStream("bg.jpg"));
+                                    g.drawImage(bgimg, 0, 0, 1000, 700, null);
                                 } catch(Exception e) {
                                     e.printStackTrace();
                                 }
@@ -245,12 +246,14 @@ public class Pong implements KeyListener {
             Graphics g = p.getGraphics();
             try {
                 if(y==630) {
-                    Image img = ImageIO.read(getClass().getResourceAsStream("alleywaypaddle.jpg"));
-                    g.drawImage(img, x, y, paddle.width, 22, null);
+                    if(paddleimg1 == null)
+                        paddleimg1 = ImageIO.read(getClass().getResourceAsStream("alleywaypaddle.jpg"));
+                    g.drawImage(paddleimg1, x, y, paddle.width, 22, null);
                 }
                 else {
-                    Image img = ImageIO.read(getClass().getResourceAsStream("alleywaypaddle2.jpg"));
-                    g.drawImage(img, x, y, paddle.width, 22, null);
+                    if(paddleimg2 == null)
+                        paddleimg2 = ImageIO.read(getClass().getResourceAsStream("alleywaypaddle2.jpg"));
+                    g.drawImage(paddleimg2, x, y, paddle.width, 22, null);
                 }
             } catch(Exception e) {
                 e.printStackTrace();
@@ -442,7 +445,7 @@ public class Pong implements KeyListener {
                     }
                     j.setTitle("Alleyway. {Points} Human: " + lives + " v. Computer: " + lives2);
                     try {
-                        Thread.sleep(40);
+                        Thread.sleep(60);
                         draw();
                         ball.move();
                         paddle.draw();
@@ -456,11 +459,17 @@ public class Pong implements KeyListener {
         };
     }
     
+    Image ballimg = null;
+    Image bgimg = null;
+    Image paddleimg1 = null;
+    Image paddleimg2 = null;
+    
     private void drawBall() {
         Graphics g = p.getGraphics();
         try {
-            Image img = ImageIO.read(getClass().getResourceAsStream("ball.png"));
-            g.drawImage(img, ball.x, ball.y, 28, 28, null);
+            if(ballimg == null)
+                ballimg = ImageIO.read(getClass().getResourceAsStream("ball.png"));
+            g.drawImage(ballimg, ball.x, ball.y, 28, 28, null);
         } catch(Exception e) {
             e.printStackTrace();
         }
@@ -470,8 +479,9 @@ public class Pong implements KeyListener {
     public void draw() {
         Graphics g = p.getGraphics();
         try {
-            Image img = ImageIO.read(getClass().getResourceAsStream("bg.jpg"));
-            g.drawImage(img, 0, 0, 1000, 700, null);
+            if(bgimg == null)
+                bgimg = ImageIO.read(getClass().getResourceAsStream("bg.jpg"));
+            g.drawImage(bgimg, 0, 0, 1000, 700, null);
         } catch(Exception e) {
             e.printStackTrace();
         }
