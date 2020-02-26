@@ -125,7 +125,7 @@ public class Pong implements KeyListener {
                             }
                             j.setTitle("pong. {Points} Human: " + lives + " v. Computer: " + lives2);
                             try {
-                                Thread.sleep(60);
+                                Thread.sleep(50);
                                 draw();
                                 ball.move();
                                 paddle.draw();
@@ -445,7 +445,7 @@ public class Pong implements KeyListener {
                     }
                     j.setTitle("Alleyway. {Points} Human: " + lives + " v. Computer: " + lives2);
                     try {
-                        Thread.sleep(60);
+                        Thread.sleep(50);
                         draw();
                         ball.move();
                         paddle.draw();
@@ -466,25 +466,29 @@ public class Pong implements KeyListener {
     
     private void drawBall() {
         Graphics g = p.getGraphics();
-        try {
-            if(ballimg == null)
-                ballimg = ImageIO.read(getClass().getResourceAsStream("ball.png"));
-            g.drawImage(ballimg, ball.x, ball.y, 28, 28, null);
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            if(bgimg == null)
+//                bgimg = ImageIO.read(getClass().getResourceAsStream("bg.jpg"));
+//            g.drawImage(bgimg, 0, 0, 1000, 700, null);
+//        } catch(Exception e) {
+//            e.printStackTrace();
+//        }
+        g.setColor(Color.white);
+        g.fillOval(ball.x,ball.y,20,20);
         g.dispose();
     }
     
     public void draw() {
         Graphics g = p.getGraphics();
-        try {
-            if(bgimg == null)
-                bgimg = ImageIO.read(getClass().getResourceAsStream("bg.jpg"));
-            g.drawImage(bgimg, 0, 0, 1000, 700, null);
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            if(bgimg == null)
+//                bgimg = ImageIO.read(getClass().getResourceAsStream("bg.jpg"));
+//            g.drawImage(bgimg, 0, 0, 1000, 700, null);
+//        } catch(Exception e) {
+//            e.printStackTrace();
+//        }
+        g.setColor(Color.PINK);
+        g.fillRect(0,0,1000,700);
         g.dispose();
     }
     
