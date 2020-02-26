@@ -16,10 +16,13 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 import javax.sound.sampled.DataLine;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 
 public class Bong implements KeyListener {
 
+    Thread t = null;
+    
     JFrame j = new JFrame();
     
     JPanel p = new JPanel();
@@ -55,32 +58,158 @@ public class Bong implements KeyListener {
     long timet = 0;
     
     String vk = "";
+    
+    boolean menu = true;
+    int a = 1;
 
    @Override
     public void keyPressed(KeyEvent e) {
-        if(e.getKeyCode() == KeyEvent.VK_LEFT) {
-            vk = "left";
-            paddle.move_left();
-            timet = new Date().getTime();
-            if(Math.abs(time - timet) < 2000) {
-                if(ball.x >= paddle.x && ball.x <= paddle.x + paddle.width && ball.y >= paddle.y-10 && ball.y <= paddle.y+10 + 15) {
-                    paddle.accel_left();
-                    ball.move();
+        if(menu)
+        {
+            if(e.getKeyCode() == KeyEvent.VK_DOWN) {
+                if(a == 1) {
+                    a = 2;
                 }
+                else if(a == 2)
+                    a = 3;
+                else if(a == 3)
+                    a = 1;
             }
-            time = new Date().getTime();
+            if(e.getKeyCode() == KeyEvent.VK_ENTER) {
+                menu = false;
+                lives = lives2 = 0;
+                t = new Thread() {
+                    public void run() {
+                        while(true) {
+                            if(a==1) {
+                                if(ball.x < enemyPaddle.x+enemyPaddle.width/2) {
+                                    enemyPaddle.move_left();
+                                }
+                                if(ball.x > enemyPaddle.x+enemyPaddle.width/2) {
+                                    enemyPaddle.move_right();
+                                }
+                            } else if(a==2) {
+                                if(ball.x < enemyPaddle.x+enemyPaddle.width/2) {
+                                    enemyPaddle.move_left_mid();
+                                }
+                                if(ball.x > enemyPaddle.x+enemyPaddle.width/2) {
+                                    enemyPaddle.move_right_mid();
+                                }
+                            } else if(a==3) {
+                                if(ball.x < enemyPaddle.x+enemyPaddle.width/2) {
+                                    enemyPaddle.move_left();
+                                    enemyPaddle.move_left();
+                                }
+                                if(ball.x > enemyPaddle.x+enemyPaddle.width/2) {
+                                    enemyPaddle.move_right();
+                                    enemyPaddle.move_right();
+                                }
+                            }
+                            if(vk.equals("left")) {
+                                vk = "";
+                                if(Math.abs(time - timet) < 2000) {
+                                    if(ball.x >= paddle.x && ball.x <= paddle.x + paddle.width && ball.y >= paddle.y-10 && ball.y <= paddle.y+10 + 15) {
+                                        paddle.accel_left();
+                                        ball.move();
+                                    }
+                                }
+                            }
+                            if(vk.equals("right")) {
+                                vk = "";
+                                if(Math.abs(time - timet) < 2000) {
+                                    if(ball.x >= paddle.x && ball.x <= paddle.x + paddle.width && ball.y >= paddle.y-10 && ball.y <= paddle.y+10 + 15) {
+                                        paddle.accel_right();
+                                        ball.move();
+                                    }
+                                }
+                            }
+                            j.setTitle("Alleyway. {Points} Human: " + lives + " v. Computer: " + lives2);
+                            try {
+                                Thread.sleep(30);
+                                draw();
+                                ball.move();
+                                paddle.draw();
+                                enemyPaddle.draw();
+                                drawBall();
+                            } catch(Exception e) {
+                                e.printStackTrace();
+                            }
+                        }
+                    }
+                };
+                t.start();
+            }
         }
-        if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
-            vk = "right";
-            paddle.move_right();
-            timet = new Date().getTime();
-            if(Math.abs(time - timet) < 2000) {
-                if(ball.x >= paddle.x && ball.x <= paddle.x + paddle.width && ball.y >= paddle.y-10 && ball.y <= paddle.y+10 + 15) {
-                    paddle.accel_right();
-                    ball.move();
+        if(!menu)
+        {
+            if(e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+                if(JOptionPane.showConfirmDialog(null, "End current game?") == JOptionPane.YES_OPTION) {
+                    menu = true;
+                    t.stop();
+                                    lives = lives2 = 0;
+
+                    tt = new Thread() {
+                        public void run() {
+                            while(true) {
+                                if(!menu)
+                                    break;
+                                Graphics g = p.getGraphics();
+                                try {
+                                    Image img = ImageIO.read(getClass().getResourceAsStream("bg.jpg"));
+                                    g.drawImage(img, 0, 0, 1000, 700, null);
+                                } catch(Exception e) {
+                                    e.printStackTrace();
+                                }
+                                g.drawString("PONG", 10, 10);
+                                if(a == 1) {
+                                    g.drawString("> Easy", 10, 100);
+                                    g.drawString("Medium", 10, 150);
+                                    g.drawString("Hard", 10, 200);
+                                } else if(a == 2) {
+                                    g.drawString("Easy", 10, 100);
+                                    g.drawString("> Medium", 10, 150);
+                                    g.drawString("Hard", 10, 200);
+                                } else if(a == 3) {
+                                    g.drawString("Easy", 10, 100);
+                                    g.drawString("Medium", 10, 150);
+                                    g.drawString("> Hard", 10, 200);
+                                }
+                                g.dispose();
+                                try {
+                                    Thread.sleep(1000);
+                                } catch(InterruptedException ie) {
+
+                                }
+                            }
+                        }
+                    };
+                    tt.start();
                 }
             }
-            time = new Date().getTime();
+            if(e.getKeyCode() == KeyEvent.VK_LEFT) {
+                vk = "left";
+                paddle.move_left();
+                timet = new Date().getTime();
+                if(Math.abs(time - timet) < 2000) {
+                    if(ball.x >= paddle.x && ball.x <= paddle.x + paddle.width && ball.y >= paddle.y-10 && ball.y <= paddle.y+10 + 15) {
+                        paddle.accel_left();
+                        ball.move();
+                    }
+                }
+                time = new Date().getTime();
+            }
+            if(e.getKeyCode() == KeyEvent.VK_RIGHT) {
+                vk = "right";
+                paddle.move_right();
+                timet = new Date().getTime();
+                if(Math.abs(time - timet) < 2000) {
+                    if(ball.x >= paddle.x && ball.x <= paddle.x + paddle.width && ball.y >= paddle.y-10 && ball.y <= paddle.y+10 + 15) {
+                        paddle.accel_right();
+                        ball.move();
+                    }
+                }
+                time = new Date().getTime();
+            }
         }
     }
 
@@ -142,8 +271,13 @@ public class Bong implements KeyListener {
         public void move_right() {
             x+=20;
         }
+        public void move_left_mid() {
+            x-=30;
+        }
+        public void move_right_mid() {
+            x+=30;
+        }
     }
-    
     
     public class Ball {
         int x, y;
@@ -217,18 +351,76 @@ public class Bong implements KeyListener {
 
     int lives2 = 0;
     
+    Thread tt = null;
+    
     public void play() {
         enemyPaddle.x = 500;
         enemyPaddle.y = 50;
         lives = 0;
-        Thread t = new Thread() {
+        tt = new Thread() {
             public void run() {
                 while(true) {
-                    if(ball.x < enemyPaddle.x+enemyPaddle.width/2) {
-                        enemyPaddle.move_left();
+                    if(!menu)
+                        break;
+                    Graphics g = p.getGraphics();
+                    try {
+                        Image img = ImageIO.read(getClass().getResourceAsStream("bg.jpg"));
+                        g.drawImage(img, 0, 0, 1000, 700, null);
+                    } catch(Exception e) {
+                        e.printStackTrace();
                     }
-                    if(ball.x > enemyPaddle.x+enemyPaddle.width/2) {
-                        enemyPaddle.move_right();
+                    g.drawString("PONG", 10, 10);
+                    if(a == 1) {
+                        g.drawString("> Easy", 10, 100);
+                        g.drawString("Medium", 10, 150);
+                        g.drawString("Hard", 10, 200);
+                    } else if(a == 2) {
+                        g.drawString("Easy", 10, 100);
+                        g.drawString("> Medium", 10, 150);
+                        g.drawString("Hard", 10, 200);
+                    } else if(a == 3) {
+                        g.drawString("Easy", 10, 100);
+                        g.drawString("Medium", 10, 150);
+                        g.drawString("> Hard", 10, 200);
+                    }
+                    g.dispose();
+                    try {
+                        Thread.sleep(1000);
+                    } catch(InterruptedException ie) {
+                        
+                    }
+                }
+            }
+        };
+        tt.start();
+        t = new Thread() {
+            public void run() {
+                while(true) {
+                    //if(menu)
+                        //break;
+                    if(a==1) {
+                        if(ball.x < enemyPaddle.x+enemyPaddle.width/2) {
+                            enemyPaddle.move_left();
+                        }
+                        if(ball.x > enemyPaddle.x+enemyPaddle.width/2) {
+                            enemyPaddle.move_right();
+                        }
+                    } else if(a==2) {
+                        if(ball.x < enemyPaddle.x+enemyPaddle.width/2) {
+                            enemyPaddle.move_left_mid();
+                        }
+                        if(ball.x > enemyPaddle.x+enemyPaddle.width/2) {
+                            enemyPaddle.move_right_mid();
+                        }
+                    } else if(a==3) {
+                        if(ball.x < enemyPaddle.x+enemyPaddle.width/2) {
+                            enemyPaddle.move_left();
+                            enemyPaddle.move_left();
+                        }
+                        if(ball.x > enemyPaddle.x+enemyPaddle.width/2) {
+                            enemyPaddle.move_right();
+                            enemyPaddle.move_right();
+                        }
                     }
                     if(vk.equals("left")) {
                         vk = "";
@@ -250,7 +442,7 @@ public class Bong implements KeyListener {
                     }
                     j.setTitle("Alleyway. {Points} Human: " + lives + " v. Computer: " + lives2);
                     try {
-                        Thread.sleep(50);
+                        Thread.sleep(30);
                         draw();
                         ball.move();
                         paddle.draw();
@@ -262,7 +454,6 @@ public class Bong implements KeyListener {
                 }
             }
         };
-        t.start();
     }
     
     private void drawBall() {
