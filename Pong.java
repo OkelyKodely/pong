@@ -61,6 +61,7 @@ public class Pong implements KeyListener {
     
     boolean menu = true;
     int a = 1;
+    int b = 1;
 
    @Override
     public void keyPressed(KeyEvent e) {
@@ -74,6 +75,13 @@ public class Pong implements KeyListener {
                     a = 3;
                 else if(a == 3)
                     a = 1;
+            }
+            if(e.getKeyCode() == KeyEvent.VK_UP) {
+                if(b == 1) {
+                    b = 2;
+                }
+                else if(b == 2)
+                    b = 1;
             }
             if(e.getKeyCode() == KeyEvent.VK_ENTER) {
                 menu = false;
@@ -123,8 +131,23 @@ public class Pong implements KeyListener {
                                     }
                                 }
                             }
-                            j.setTitle("pong. {Points} Human: " + lives + " v. Computer: " + lives2);
+                            if(b == 1)
+                                j.setTitle("pong. {10 Points} Human: " + lives + " v. Computer: " + lives2);
+                            if(b == 2)
+                                j.setTitle("pong. {Free Points} Human: " + lives + " v. Computer: " + lives2);
                             try {
+                                if(b == 1) {
+                                    if(lives == 10) {
+                                        menu = true;
+                                        JOptionPane.showMessageDialog(null, "You win");
+                                        t.stop();
+                                    }
+                                    if(lives2 == 10) {
+                                        menu = true;
+                                        JOptionPane.showMessageDialog(null, "You lose");
+                                        t.stop();
+                                    }
+                                }
                                 Thread.sleep(50);
                                 draw();
                                 ball.move();
@@ -166,14 +189,35 @@ public class Pong implements KeyListener {
                                     g.drawString("> Easy", 10, 100);
                                     g.drawString("Medium", 10, 150);
                                     g.drawString("Hard", 10, 200);
+                                    if(b == 1) {
+                                        g.drawString("> 10 point", 10, 300);
+                                        g.drawString("free play", 10, 350);
+                                    } else {
+                                        g.drawString("10 point", 10, 300);
+                                        g.drawString("> free play", 10, 350);
+                                    }
                                 } else if(a == 2) {
                                     g.drawString("Easy", 10, 100);
                                     g.drawString("> Medium", 10, 150);
                                     g.drawString("Hard", 10, 200);
+                                    if(b == 1) {
+                                        g.drawString("> 10 point", 10, 300);
+                                        g.drawString("free play", 10, 350);
+                                    } else {
+                                        g.drawString("10 point", 10, 300);
+                                        g.drawString("> free play", 10, 350);
+                                    }
                                 } else if(a == 3) {
                                     g.drawString("Easy", 10, 100);
                                     g.drawString("Medium", 10, 150);
                                     g.drawString("> Hard", 10, 200);
+                                    if(b == 1) {
+                                        g.drawString("> 10 point", 10, 300);
+                                        g.drawString("free play", 10, 350);
+                                    } else {
+                                        g.drawString("10 point", 10, 300);
+                                        g.drawString("> free play", 10, 350);
+                                    }
                                 }
                                 g.dispose();
                                 try {
@@ -377,14 +421,39 @@ public class Pong implements KeyListener {
                         g.drawString("> Easy", 10, 100);
                         g.drawString("Medium", 10, 150);
                         g.drawString("Hard", 10, 200);
+                        if(b == 1) {
+                            g.drawString("> 10 point", 10, 300);
+                            g.drawString("free play", 10, 350);
+                        } else {
+                            g.drawString("10 point", 10, 300);
+                            g.drawString("> free play", 10, 350);
+                        }
                     } else if(a == 2) {
                         g.drawString("Easy", 10, 100);
                         g.drawString("> Medium", 10, 150);
                         g.drawString("Hard", 10, 200);
+                        g.drawString("10 point", 10, 300);
+                        g.drawString("free play", 10, 350);
+                        if(b == 1) {
+                            g.drawString("> 10 point", 10, 300);
+                            g.drawString("free play", 10, 350);
+                        } else {
+                            g.drawString("10 point", 10, 300);
+                            g.drawString("> free play", 10, 350);
+                        }
                     } else if(a == 3) {
                         g.drawString("Easy", 10, 100);
                         g.drawString("Medium", 10, 150);
                         g.drawString("> Hard", 10, 200);
+                        g.drawString("10 point", 10, 300);
+                        g.drawString("free play", 10, 350);
+                        if(b == 1) {
+                            g.drawString("> 10 point", 10, 300);
+                            g.drawString("free play", 10, 350);
+                        } else {
+                            g.drawString("10 point", 10, 300);
+                            g.drawString("> free play", 10, 350);
+                        }
                     }
                     g.dispose();
                     try {
@@ -399,8 +468,6 @@ public class Pong implements KeyListener {
         t = new Thread() {
             public void run() {
                 while(true) {
-                    //if(menu)
-                        //break;
                     if(a==1) {
                         if(ball.x < enemyPaddle.x+enemyPaddle.width/2) {
                             enemyPaddle.move_left();
@@ -443,8 +510,83 @@ public class Pong implements KeyListener {
                             }
                         }
                     }
-                    j.setTitle("Alleyway. {Points} Human: " + lives + " v. Computer: " + lives2);
+                    if(b == 1)
+                        j.setTitle("pong. {10 Points} Human: " + lives + " v. Computer: " + lives2);
+                    if(b == 2)
+                        j.setTitle("pong. {Free Points} Human: " + lives + " v. Computer: " + lives2);
                     try {
+                        if(b == 1) {
+                            if(lives == 10) {
+                                menu = true;
+                                JOptionPane.showMessageDialog(null, "You win");
+                                t.stop();
+                            }
+                            if(lives2 == 10) {
+                                menu = true;
+                                JOptionPane.showMessageDialog(null, "You lose");
+                                t.stop();
+                            }
+                            if(lives == 10 || lives2 == 10) {
+                                tt = new Thread() {
+                                    public void run() {
+                                        while(true) {
+                                            if(!menu)
+                                                break;
+                                            Graphics g = p.getGraphics();
+                                            try {
+                                                if(bgimg == null)
+                                                    bgimg = ImageIO.read(getClass().getResourceAsStream("bg.jpg"));
+                                                g.drawImage(bgimg, 0, 0, 1000, 700, null);
+                                            } catch(Exception e) {
+                                                e.printStackTrace();
+                                            }
+                                            g.drawString("PONG", 10, 10);
+                                            if(a == 1) {
+                                                g.drawString("> Easy", 10, 100);
+                                                g.drawString("Medium", 10, 150);
+                                                g.drawString("Hard", 10, 200);
+                                                if(b == 1) {
+                                                    g.drawString("> 10 point", 10, 300);
+                                                    g.drawString("free play", 10, 350);
+                                                } else {
+                                                    g.drawString("10 point", 10, 300);
+                                                    g.drawString("> free play", 10, 350);
+                                                }
+                                            } else if(a == 2) {
+                                                g.drawString("Easy", 10, 100);
+                                                g.drawString("> Medium", 10, 150);
+                                                g.drawString("Hard", 10, 200);
+                                                if(b == 1) {
+                                                    g.drawString("> 10 point", 10, 300);
+                                                    g.drawString("free play", 10, 350);
+                                                } else {
+                                                    g.drawString("10 point", 10, 300);
+                                                    g.drawString("> free play", 10, 350);
+                                                }
+                                            } else if(a == 3) {
+                                                g.drawString("Easy", 10, 100);
+                                                g.drawString("Medium", 10, 150);
+                                                g.drawString("> Hard", 10, 200);
+                                                if(b == 1) {
+                                                    g.drawString("> 10 point", 10, 300);
+                                                    g.drawString("free play", 10, 350);
+                                                } else {
+                                                    g.drawString("10 point", 10, 300);
+                                                    g.drawString("> free play", 10, 350);
+                                                }
+                                            }
+                                            g.dispose();
+                                            try {
+                                                Thread.sleep(1000);
+                                            } catch(InterruptedException ie) {
+
+                                            }
+                                        }
+                                    }
+                                };
+                                tt.start();
+                            }
+                        }
                         Thread.sleep(50);
                         draw();
                         ball.move();
